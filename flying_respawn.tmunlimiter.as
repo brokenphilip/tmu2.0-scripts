@@ -1,4 +1,4 @@
-// Flying Respawn 1.0 by brokenphilip
+// Flying Respawn v1.0 by brokenphilip
 
 // Flying respawn duration (default = 1.5s / 150 ticks)
 const uint _duration = 150;

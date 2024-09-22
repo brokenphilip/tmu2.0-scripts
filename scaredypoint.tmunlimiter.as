@@ -1,7 +1,7 @@
-// ScaredyFin 1.0 by brokenphilip
+// ScaredyPoint v1.0 by brokenphilip
 
 int _tick;
-uint _fin;
+uint _cp;
 
 bool _dist_set = false;
 float _dist;
@@ -17,7 +17,7 @@ void onStart(TrackManiaRace@ race)
 
         if (block.waypointType == WaypointType::Checkpoint)
         {
-            _fin = i;
+            _cp = i;
             break;
         }
     }
@@ -34,7 +34,7 @@ void onTick(TrackManiaRace@ race)
             return;
         }
 
-        auto state = race.challenge.blocks[_fin].getBlockState();
+        auto state = race.challenge.blocks[_cp].getBlockState();
 
         auto local = race.getPlayingPlayer();
         auto car = local.get_vehicleCar();

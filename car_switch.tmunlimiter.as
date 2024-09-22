@@ -1,4 +1,4 @@
-// Car Switch 1.0 by brokenphilip
+// Car Switch v1.0 by brokenphilip
 
 // in order of the Painter
 const array<string> gCars = {"American", "Rally", "SnowCar", "SportCar", "CoastCar", "BayCar", "StadiumCar"};
