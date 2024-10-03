@@ -1,8 +1,7 @@
 /*
-    Chase v1.1 by brokenphilip
+    Chase v1.0 by brokenphilip
 
     v1.0 - Initial release
-    v1.1 - Print constants into the console
 */
 
 /*
@@ -42,7 +41,7 @@ const uint RED_TEAM = 1;
 const uint NO_TEAM = 2;
 
 // console logging prefix - to enable the console, add "/console" to your launch parameters
-const string PREFIX = "[Chase 1.1] ";
+const string PREFIX = "[Chase 1.0] ";
 
 // what environemnt are we in?
 string _collection;
@@ -134,14 +133,6 @@ bool isSpecialFinOrCP(const BlockSettings@ settings, bool cp)
 
 void onStart(TrackManiaRace@ race)
 {
-    console.info(PREFIX + "onStart: Current settings are as follows:");
-    
-    console.info(PREFIX + "onStart: MAX_OOB_TICKS = " + MAX_OOB_TICKS);
-    console.info(PREFIX + "onStart: MAX_RESPAWN_SPEED = " + MAX_RESPAWN_SPEED);
-    console.info(PREFIX + "onStart: PREGAME_TIME = " + PREGAME_TIME);
-    console.info(PREFIX + "onStart: RESPAWN_WAIT_TIME = " + RESPAWN_WAIT_TIME);
-    console.info(PREFIX + "onStart: TIME_LIMIT = " + TIME_LIMIT);
-
     auto challenge = race.challenge;
     auto size = challenge.size;
     uint width = 32;
@@ -263,6 +254,14 @@ void onStart(TrackManiaRace@ race)
             console.info(PREFIX + "onStart: This map is NOT ready for Chase - fix all of the above issues first!");
         }
     }
+
+    console.info(PREFIX + "onStart: Current settings/constants are as follows:");
+    
+    console.info(PREFIX + "onStart: MAX_OOB_TICKS = " + MAX_OOB_TICKS);
+    console.info(PREFIX + "onStart: MAX_RESPAWN_SPEED = " + MAX_RESPAWN_SPEED);
+    console.info(PREFIX + "onStart: PREGAME_TIME = " + PREGAME_TIME);
+    console.info(PREFIX + "onStart: RESPAWN_WAIT_TIME = " + RESPAWN_WAIT_TIME);
+    console.info(PREFIX + "onStart: TIME_LIMIT = " + TIME_LIMIT);
 
     auto local = race.getPlayingPlayer();
     if (local.raceState == TrackManiaPlayer::RaceState::BeforeStart)
