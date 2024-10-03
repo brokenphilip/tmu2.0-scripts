@@ -1,4 +1,8 @@
-// Car Switch Lap v1.0 by brokenphilip
+/*
+    Car Switch Lap v1.0 by brokenphilip
+
+    v1.0 - Initial release
+*/
 
 const array<string> gCars = {"American", "Rally", "SnowCar", "SportCar", "CoastCar", "BayCar", "StadiumCar"};
 int gCar = 0;

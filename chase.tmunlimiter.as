@@ -1,5 +1,8 @@
 /*
-    Chase 1.0 by brokenphilip
+    Chase v1.1 by brokenphilip
+
+    v1.0 - Initial release
+    v1.1 - Print constants into the console
 */
 
 /*
@@ -39,7 +42,7 @@ const uint RED_TEAM = 1;
 const uint NO_TEAM = 2;
 
 // console logging prefix - to enable the console, add "/console" to your launch parameters
-const string PREFIX = "[Chase 1.0] ";
+const string PREFIX = "[Chase 1.1] ";
 
 // what environemnt are we in?
 string _collection;
@@ -48,7 +51,7 @@ string _collection;
 Vec3 _bounds;
 
 // is chase mode enabled (only for network games, offline/test mode is separate)
-bool _enabled;
+bool _enabled = true;
 
 // what team are we in?
 uint _team = NO_TEAM;
@@ -131,13 +134,13 @@ bool isSpecialFinOrCP(const BlockSettings@ settings, bool cp)
 
 void onStart(TrackManiaRace@ race)
 {
-    _tick = 0;
-    _respawn_request_time = UINT_MAX;
-
-    _enabled = true;
-
-    @_special_fin = null;
-    @_special_cp = null;
+    console.info(PREFIX + "onStart: Current settings are as follows:");
+    
+    console.info(PREFIX + "onStart: MAX_OOB_TICKS = " + MAX_OOB_TICKS);
+    console.info(PREFIX + "onStart: MAX_RESPAWN_SPEED = " + MAX_RESPAWN_SPEED);
+    console.info(PREFIX + "onStart: PREGAME_TIME = " + PREGAME_TIME);
+    console.info(PREFIX + "onStart: RESPAWN_WAIT_TIME = " + RESPAWN_WAIT_TIME);
+    console.info(PREFIX + "onStart: TIME_LIMIT = " + TIME_LIMIT);
 
     auto challenge = race.challenge;
     auto size = challenge.size;
@@ -315,7 +318,7 @@ void onTick(TrackManiaRace@ race)
         return;
     }
 
-    // if we activate cps in onStart, finishing will not work
+    // if we activate cps too early (or in onStart), finishing will not work
     if (!_got_cp && _team == RED_TEAM && _tick > PREGAME_TIME)
     {
         local.triggerWaypointBlock(_special_cp);
@@ -333,6 +336,7 @@ void onTick(TrackManiaRace@ race)
         _oob_ticks--;
         if (_oob_ticks <= 0)
         {
+            // we want cops to die too, to make things more interesting
             console.info(PREFIX + "onTick: We went out of bounds");
             local.giveUp();
         }
@@ -387,6 +391,7 @@ void onTick(TrackManiaRace@ race)
 		{
             if (_special_cp !is null && _special_fin !is null)
             {
+                // can't do both of these at once
                 if (_got_cp)
                 {
                     local.triggerWaypointBlock(_special_fin);
@@ -421,12 +426,13 @@ void onTick(TrackManiaRace@ race)
 		}
 		
 		// we are racing, and there are no more red players, thus we are on blue team and should win instantly
-		// if there were no blue players instead, red still has to finish before time runs out
+		// if there were no blue players instead, red still has to finish before time runs out, otherwise it's a tie
 		if (!at_least_one_red_player)
 		{
             console.info(PREFIX + "onTick: Game over - no more red players");
 			if (_special_cp !is null && _special_fin !is null)
             {
+                // can't do both of these at once
                 if (_got_cp)
                 {
                     local.triggerWaypointBlock(_special_fin);

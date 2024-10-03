@@ -1,7 +1,24 @@
-// Flying Respawn v1.0 by brokenphilip
+/*
+	Flying Respawn v1.0 by brokenphilip
+
+	v1.0 - Initial release
+*/
+
+/*
+    *** CONSTANTS ***
+
+    Feel free to modify them if you really need to, but ideally keep them as-is for consistency.
+    NOTE: 1 second is 100 ticks
+*/
 
 // Flying respawn duration (default = 1.5s / 150 ticks)
-const uint _duration = 150;
+const uint DURATION = 150;
+
+/*
+    *** CODE STARTS HERE - END OF USER MODIFICATIONS ***
+    
+    Do NOT modify anything below this line!
+*/
 
 // are we currently in a flying respawn?
 bool _is_respawning = false;
@@ -46,7 +63,7 @@ void onTick(TrackManiaRace@ race)
 	
 	if (_is_respawning)
 	{
-		if (_respawn_tick + _duration < _tick)
+		if (_respawn_tick + DURATION < _tick)
 		{
 			_respawn_tick = _tick;
 		}
@@ -110,17 +127,17 @@ void onTick(TrackManiaRace@ race)
 
 
 	auto length = cur_rotation.length;
-	if (length > _duration)
+	if (length > DURATION)
 	{
-		cur_rotation.removeAt(0, length - _duration);
-		cur_location.removeAt(0, length - _duration);
-		cur_linearSpeed.removeAt(0, length - _duration);
-		cur_addLinearSpeed.removeAt(0, length - _duration);
-		cur_angularSpeed.removeAt(0, length - _duration);
-		cur_force.removeAt(0, length - _duration);
-		cur_torque.removeAt(0, length - _duration);
-		cur_inverseInertiaTensor.removeAt(0, length - _duration);
-		cur_notTweakedLinearSpeed.removeAt(0, length - _duration);
+		cur_rotation.removeAt(0, length - DURATION);
+		cur_location.removeAt(0, length - DURATION);
+		cur_linearSpeed.removeAt(0, length - DURATION);
+		cur_addLinearSpeed.removeAt(0, length - DURATION);
+		cur_angularSpeed.removeAt(0, length - DURATION);
+		cur_force.removeAt(0, length - DURATION);
+		cur_torque.removeAt(0, length - DURATION);
+		cur_inverseInertiaTensor.removeAt(0, length - DURATION);
+		cur_notTweakedLinearSpeed.removeAt(0, length - DURATION);
 	}
 }
 

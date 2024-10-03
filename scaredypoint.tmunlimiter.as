@@ -1,4 +1,8 @@
-// ScaredyPoint v1.0 by brokenphilip
+/*
+    ScaredyPoint v1.0 by brokenphilip
+
+    v1.0 - Initial release
+*/
 
 int _tick;
 uint _cp;
