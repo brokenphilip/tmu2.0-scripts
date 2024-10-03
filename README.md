@@ -11,6 +11,9 @@ Lets the player change their vehicle every 0.25 seconds (in order of the in-game
 ## Car Switch Lap v1.0
 Changes the player's driven vehicle (in order of the in-game vehicle skin painter) each time a lap is completed.
 
+## Chase v1.0
+*todo*
+
 ## Flying Respawn v1.0
 Aims to replicate flying checkpoint respawns from Trackmania (2020). Needs more testing.
 
