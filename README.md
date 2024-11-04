@@ -3,6 +3,9 @@ This repository contains various track scripts that I've made for [Unlimiter 2.0
 
 Script changelogs are shown in their respective files as comments on top.
 
+## Ada Mall v1.0
+Adds a custom gamemode specifically made for my TMUF map: [2.0] Ada Mall.
+
 ## Car Switch v1.0
 Lets the player change their vehicle every 0.25 seconds (in order of the in-game vehicle skin painter) when they press a key:
 - Next vehicle: `TMU Action Key 1` or `Next score page` (default: <kbd>End</kbd>)
