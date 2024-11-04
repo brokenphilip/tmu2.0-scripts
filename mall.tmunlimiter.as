@@ -26,8 +26,6 @@ namespace Global
 
 namespace Retailers
 {
-	array<GameBlock@ const> checkpoints;
-
 	namespace Floor0
 	{
 		bool left_first = false;
@@ -135,6 +133,8 @@ namespace Restrooms
 	const GameBlock@ checkpoint;
 }
 
+// https://en.wikipedia.org/wiki/Linear_congruential_generator
+// Using higher bits for better quality (pseudo)random-ness
 class LCG
 {
 	private uint seed = 0;
@@ -178,6 +178,9 @@ void onStart(TrackManiaRace@ race)
 
 	if (race.isNetworkRace())
 	{
+		// In a multiplayer race, we want all players to have the same retailers
+		// Thus, we seed our LCG with the xorshifted server rounds played count
+		// It's not great, but it's "random enough" for our use case
 		auto net_race = race.getNetworkRace();
 		auto first_player = net_race.players[0];
 		auto round_num = first_player.tmRoundNum;
@@ -198,6 +201,7 @@ void onStart(TrackManiaRace@ race)
 	}
 	else
 	{
+		// In a singleplayer race, use a proper random number generator lol
 		Retailers::Floor0::Left::index = Math::rand(0, 2);
 		Retailers::Floor0::Right::index = Math::rand(0, 2);
 		Retailers::Floor1::Left::index = Math::rand(0, 3);
@@ -216,32 +220,26 @@ void onStart(TrackManiaRace@ race)
 	{
 		auto block = blocks[i];
 
+		// NOTE: There must be 8 (ideally hidden) checkpoints in the map, and they all must be non-respawnable and manually triggerable!
 		if (block.waypointType == WaypointType::Checkpoint)
 		{
-			auto dir = block.direction;
-			if (dir == South)
+			switch (picker)
 			{
-				@Restrooms::checkpoint = block;
+				case 0: @Retailers::Floor0::Left::checkpoint = block; break;
+				case 1: @Retailers::Floor0::Right::checkpoint = block; break;
+				case 2: @Retailers::Floor1::Left::checkpoint = block; break;
+				case 3: @Retailers::Floor1::Right::checkpoint = block; break;
+				case 4: @Retailers::Floor2::Left::checkpoint = block; break;
+				case 5: @Retailers::Floor2::Right::checkpoint = block; break;
+				case 6: @Retailers::Floor2::Center::checkpoint = block; break;
+				case 7: @Restrooms::checkpoint = block; break;
 			}
-			else
-			{
-				switch (picker)
-				{
-					case 0: @Retailers::Floor0::Left::checkpoint = block; break;
-					case 1: @Retailers::Floor0::Right::checkpoint = block; break;
-					case 2: @Retailers::Floor1::Left::checkpoint = block; break;
-					case 3: @Retailers::Floor1::Right::checkpoint = block; break;
-					case 4: @Retailers::Floor2::Left::checkpoint = block; break;
-					case 5: @Retailers::Floor2::Right::checkpoint = block; break;
-					case 6: @Retailers::Floor2::Center::checkpoint = block; break;
-				}
-				picker++;
-			}
+			picker++;
 		}
 	}
 }
 
-bool isNear(const Vec3&in car_loc, const Vec3&in target_pos, CardinalDir dir)
+bool isNear(const Vec3&in car_loc, const Vec3&in target_pos, CardinalDir dir, float min_distance = 14)
 {
 	auto loc = Vec3(car_loc);
 	auto pos = Vec3(target_pos);
@@ -268,7 +266,7 @@ bool isNear(const Vec3&in car_loc, const Vec3&in target_pos, CardinalDir dir)
 		pos.z -= 16;
 	}
 	
-	if (loc.distance(pos) <= 14)
+	if (loc.distance(pos) <= min_distance)
 	{
 		return true;
 	}
@@ -288,6 +286,8 @@ void onTick(TrackManiaRace@ race)
 	if (Global::state == Going::Shopping || Global::state == Going::ShoppingAgain)
 	{
 		Vec3 position;
+
+		/***** FLOOR 0 *****/
 		if (Retailers::Floor0::left_first)
 		{
 			position = Retailers::Floor0::Left::positions[Retailers::Floor0::Left::index];
@@ -307,6 +307,7 @@ void onTick(TrackManiaRace@ race)
 			}
 		}
 
+		/***** FLOOR 1 *****/
 		if (Retailers::Floor1::left_first)
 		{
 			position = Retailers::Floor1::Left::positions[Retailers::Floor1::Left::index];
@@ -326,6 +327,7 @@ void onTick(TrackManiaRace@ race)
 			}
 		}
 
+		/***** FLOOR 2 *****/
 		if (Retailers::Floor2::left_first)
 		{
 			auto index = Retailers::Floor2::Left::index;
@@ -334,6 +336,7 @@ void onTick(TrackManiaRace@ race)
 			CardinalDir dir = West;
 			if (index == 6)
 			{
+				// HACK: The last store's checkpoint is rotated 90 degrees
 				dir = North;
 			}
 			if (isNear(loc, position, dir))
@@ -349,6 +352,7 @@ void onTick(TrackManiaRace@ race)
 			CardinalDir dir = East;
 			if (index == 6)
 			{
+				// HACK: The last store's checkpoint is rotated 90 degrees
 				dir = North;
 			}
 			if (isNear(loc, position, dir))
@@ -368,6 +372,7 @@ void onTick(TrackManiaRace@ race)
 
 		if (isNear(loc, position, North))
 		{
+			// Flip the side we're supposed to shop at
 			Retailers::Floor0::left_first = !Retailers::Floor0::left_first;
 			Retailers::Floor1::left_first = !Retailers::Floor1::left_first;
 			Retailers::Floor2::left_first = !Retailers::Floor2::left_first;
@@ -424,9 +429,10 @@ void onCheckPoint(TrackManiaRace@ race, GameBlock@ checkPointBlock)
 
 bool onBindInputEvent(TrackManiaRace@ race, BindInputEvent@ inputEvent, uint eventTime)
 {
-    auto local = race.getPlayingPlayer();
-    if (local.raceState == TrackManiaPlayer::RaceState::Running && inputEvent.getBindName() == "Respawn" && inputEvent.getEnabled() && Global::state == Going::ToLeave)
-    {
+	auto local = race.getPlayingPlayer();
+	if (local.raceState == TrackManiaPlayer::RaceState::Running && inputEvent.getBindName() == "Respawn" && inputEvent.getEnabled() && Global::state == Going::ToLeave)
+	{
+		// If we got the bathroom checkpoint, we're allowed to respawn to it
 		auto car = local.get_vehicleCar();
 		auto dyna = car.get_hmsDyna();
 		auto cur_state = dyna.currentState;
@@ -439,8 +445,8 @@ bool onBindInputEvent(TrackManiaRace@ race, BindInputEvent@ inputEvent, uint eve
 		cur_state.torque = Vec3(0, 0, 0);
 		cur_state.inverseInertiaTensor = Vec3(0, 0, 0);
 		cur_state.notTweakedLinearSpeed = Vec3(0, 0, 0);
-        return true;
-    }
+		return true;
+	}
 
 	return false;
 }

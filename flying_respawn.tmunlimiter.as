@@ -5,19 +5,19 @@
 */
 
 /*
-    *** CONSTANTS ***
+	*** CONSTANTS ***
 
-    Feel free to modify them if you really need to, but ideally keep them as-is for consistency.
-    NOTE: 1 second is 100 ticks
+	Feel free to modify them if you really need to, but ideally keep them as-is for consistency.
+	NOTE: 1 second is 100 ticks
 */
 
 // Flying respawn duration (default = 1.5s / 150 ticks)
 const uint DURATION = 150;
 
 /*
-    *** CODE STARTS HERE - END OF USER MODIFICATIONS ***
-    
-    Do NOT modify anything below this line!
+	*** CODE STARTS HERE - END OF USER MODIFICATIONS ***
+	
+	Do NOT modify anything below this line!
 */
 
 // are we currently in a flying respawn?
@@ -52,11 +52,11 @@ void onTick(TrackManiaRace@ race)
 {
 	_tick++;
 
-    auto local = race.getPlayingPlayer();
-    if (local.raceState != TrackManiaPlayer::RaceState::Running)
-    {
-        return;
-    }
+	auto local = race.getPlayingPlayer();
+	if (local.raceState != TrackManiaPlayer::RaceState::Running)
+	{
+		return;
+	}
 
 	auto car = local.get_vehicleCar();
 	auto dyna = car.get_hmsDyna();
@@ -157,20 +157,20 @@ void onCheckPoint(TrackManiaRace@ race, GameBlock@ checkPointBlock)
 bool onBindInputEvent(TrackManiaRace@ race, BindInputEvent@ inputEvent, uint eventTime)
 {
 	// only check inputs if the race has begun
-    auto local = race.getPlayingPlayer();
-    if (local.raceState != TrackManiaPlayer::RaceState::Running)
-    {
-        return false;
-    }
+	auto local = race.getPlayingPlayer();
+	if (local.raceState != TrackManiaPlayer::RaceState::Running)
+	{
+		return false;
+	}
 
 	// [OnBindInputEvent] Exception catched - "Input event is not a button type"
-    if (inputEvent.isAnalogType())
-    {
-        return false;
-    }
+	if (inputEvent.isAnalogType())
+	{
+		return false;
+	}
 
-    if (inputEvent.getEnabled())
-    {
+	if (inputEvent.getEnabled())
+	{
 		if (inputEvent.getBindName() == "Respawn")
 		{
 			if (!_is_respawning)

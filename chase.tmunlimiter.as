@@ -152,16 +152,16 @@ void onStart(TrackManiaRace@ race)
     for (uint i = 0; i < challenge.blocks.length; i++)
     {
         auto block = challenge.blocks[i];
-		auto pos = block.coord;
+        auto pos = block.coord;
 
         if (block.waypointType == WaypointType::StartFinish)
         {
             console.info(PREFIX + "onStart: -----");
-			console.info(PREFIX + "onStart: Found StartFinish at (X, Y, Z) = (" + pos.x + ", " + pos.y + ", " + pos.z + ") - replace with Start!");
+            console.info(PREFIX + "onStart: Found StartFinish at (X, Y, Z) = (" + pos.x + ", " + pos.y + ", " + pos.z + ") - replace with Start!");
             console.info(PREFIX + "onStart: -----");
             _enabled = false;
         }
-		
+        
         else if (block.waypointType == WaypointType::Checkpoint)
         {
             console.info(PREFIX + "onStart: -----");
@@ -354,40 +354,40 @@ void onTick(TrackManiaRace@ race)
     }
 
     if (_respawn_requested)
-	{
-		_respawn_requested = false;
-		_respawn_request_time = _tick;
-		console.info(PREFIX + "onTick: Respawn request received at " + _tick);
-	}
-	
-	if (_respawn_request_time != UINT_MAX)
-	{
-		// too fast! no respawn for you
-		if (local.displaySpeed >= MAX_RESPAWN_SPEED)
-		{
-			_respawn_request_time = UINT_MAX;
-			console.info(PREFIX + "onTick: Respawn cancelled, went too fast");
-		}
-		
-		// enough time have passed, we can respawn
-		else if (_tick >= _respawn_request_time + RESPAWN_WAIT_TIME)
-		{
-			_respawn_request_time = UINT_MAX;
-			local.respawn();
-			console.info(PREFIX + "onTick: Respawn request serviced at " + _tick);
-		}
-	}
+    {
+        _respawn_requested = false;
+        _respawn_request_time = _tick;
+        console.info(PREFIX + "onTick: Respawn request received at " + _tick);
+    }
+    
+    if (_respawn_request_time != UINT_MAX)
+    {
+        // too fast! no respawn for you
+        if (local.displaySpeed >= MAX_RESPAWN_SPEED)
+        {
+            _respawn_request_time = UINT_MAX;
+            console.info(PREFIX + "onTick: Respawn cancelled, went too fast");
+        }
+        
+        // enough time have passed, we can respawn
+        else if (_tick >= _respawn_request_time + RESPAWN_WAIT_TIME)
+        {
+            _respawn_request_time = UINT_MAX;
+            local.respawn();
+            console.info(PREFIX + "onTick: Respawn request serviced at " + _tick);
+        }
+    }
 
     // time ran out, blue wins
-	if (_tick >= TIME_LIMIT)
-	{
+    if (_tick >= TIME_LIMIT)
+    {
         console.info(PREFIX + "onTick: Game over - timelimit ran out at " + _tick);
-		if (_team == RED_TEAM)
-		{
-			local.giveUp();
-		}
-		else if (_team == BLUE_TEAM)
-		{
+        if (_team == RED_TEAM)
+        {
+            local.giveUp();
+        }
+        else if (_team == BLUE_TEAM)
+        {
             if (_special_cp !is null && _special_fin !is null)
             {
                 // can't do both of these at once
@@ -401,18 +401,18 @@ void onTick(TrackManiaRace@ race)
                     _got_cp = true;
                 }
             }
-		}
+        }
         return;
-	}
-	
+    }
+    
     // need to wait pregame, so we don't finish too early if server is empty
-	if (is_net_race && _tick > PREGAME_TIME)
-	{
-		auto net_race = race.getNetworkRace();
-		
-		bool at_least_one_red_player = false;
-		for (uint i = 0; i < net_race.players.length; i++)
-		{
+    if (is_net_race && _tick > PREGAME_TIME)
+    {
+        auto net_race = race.getNetworkRace();
+        
+        bool at_least_one_red_player = false;
+        for (uint i = 0; i < net_race.players.length; i++)
+        {
             auto player = net_race.players[i];
             if (player.raceState == TrackManiaPlayer::RaceState::Running || local.raceState == TrackManiaPlayer::RaceState::BeforeStart)
             {
@@ -422,14 +422,14 @@ void onTick(TrackManiaRace@ race)
                     break;
                 }
             }
-		}
-		
-		// we are racing, and there are no more red players, thus we are on blue team and should win instantly
-		// if there were no blue players instead, red still has to finish before time runs out, otherwise it's a tie
-		if (!at_least_one_red_player)
-		{
+        }
+        
+        // we are racing, and there are no more red players, thus we are on blue team and should win instantly
+        // if there were no blue players instead, red still has to finish before time runs out, otherwise it's a tie
+        if (!at_least_one_red_player)
+        {
             console.info(PREFIX + "onTick: Game over - no more red players");
-			if (_special_cp !is null && _special_fin !is null)
+            if (_special_cp !is null && _special_fin !is null)
             {
                 // can't do both of these at once
                 if (_got_cp)
@@ -442,8 +442,8 @@ void onTick(TrackManiaRace@ race)
                     _got_cp = true;
                 }
             }
-		}
-	}
+        }
+    }
 }
 
 bool onBindInputEvent(TrackManiaRace@ race, BindInputEvent@ inputEvent, uint eventTime)
@@ -461,7 +461,7 @@ bool onBindInputEvent(TrackManiaRace@ race, BindInputEvent@ inputEvent, uint eve
     }
 
     if (inputEvent.getBindName() == "Respawn")
-	{
+    {
         if (inputEvent.getEnabled())
         {
             if (_tick <= PREGAME_TIME)
@@ -506,7 +506,7 @@ bool onBindInputEvent(TrackManiaRace@ race, BindInputEvent@ inputEvent, uint eve
             }
         }
     }
- 
+
     else if (inputEvent.getBindName() == "Next score page " || inputEvent.getBindName() == "TMUnlimiter - Action Key 1")
     {
         if (!is_net_race && inputEvent.getEnabled())
@@ -552,14 +552,14 @@ bool onVehicleCollision(TrackManiaRace@ race, PhysicalContact@ physicalContact)
     if (physicalContact.getContactObjectType() == PhysicalContact::ContactObjectType::Player)
     {
         auto player = physicalContact.getPlayer();
-		auto local = race.getPlayingPlayer();
-		
-		// we're red and a blue caught us! game over
-		if (_team == RED_TEAM && player.team == BLUE_TEAM)
-		{
-			console.info(PREFIX + "onVehicleCollision: We were caught by " + player.get_login());
-			local.giveUp();
-		}
+        auto local = race.getPlayingPlayer();
+        
+        // we're red and a blue caught us! game over
+        if (_team == RED_TEAM && player.team == BLUE_TEAM)
+        {
+            console.info(PREFIX + "onVehicleCollision: We were caught by " + player.get_login());
+            local.giveUp();
+        }
         else if (_team == BLUE_TEAM && player.team == RED_TEAM)
         {
             console.info(PREFIX + "onVehicleCollision: We caught " + player.get_login());

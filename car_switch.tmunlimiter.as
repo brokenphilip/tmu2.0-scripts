@@ -49,36 +49,36 @@ bool onBindInputEvent(TrackManiaRace@ race, BindInputEvent@ inputEvent, uint eve
     if (inputEvent.getEnabled())
     {
         // yes there's a space in these lol
-		if (inputEvent.getBindName() == "Next score page " || inputEvent.getBindName() == "TMUnlimiter - Action Key 1")
-		{
+        if (inputEvent.getBindName() == "Next score page " || inputEvent.getBindName() == "TMUnlimiter - Action Key 1")
+        {
             // switch to next car in list
             gCar++;
-			if (gCar > 6)
-			{
-				gCar = 0;
-			}
+            if (gCar > 6)
+            {
+                gCar = 0;
+            }
 
             gLastSwitchTime = eventTime;
             local.transform(gCars[gCar]);
 
             // Input event is not cancelable
-			//return true;
-		}
-		else if (inputEvent.getBindName() == "Prev score page " || inputEvent.getBindName() == "TMUnlimiter - Action Key 2")
-		{
-			// switch to previous car in list
-			gCar--;
-			if (gCar < 0)
-			{
-				gCar = 6;
-			}
+            //return true;
+        }
+        else if (inputEvent.getBindName() == "Prev score page " || inputEvent.getBindName() == "TMUnlimiter - Action Key 2")
+        {
+            // switch to previous car in list
+            gCar--;
+            if (gCar < 0)
+            {
+                gCar = 6;
+            }
 
             gLastSwitchTime = eventTime;
             local.transform(gCars[gCar]);
 
             // Input event is not cancelable
-			//return true;
-		}
+            //return true;
+        }
     }
 
     return false;
